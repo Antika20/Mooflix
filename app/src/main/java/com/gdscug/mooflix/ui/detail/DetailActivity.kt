@@ -3,9 +3,11 @@ package com.gdscug.mooflix.ui.detail
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gdscug.mooflix.R
-import com.gdscug.mooflix.data.MoviesEntity
+import com.gdscug.mooflix.data.local.MoviesEntity
 import com.gdscug.mooflix.databinding.ActivityDetailBinding
+import com.gdscug.mooflix.utils.ShareObject.IMG_URL
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
@@ -27,10 +29,13 @@ class DetailActivity : AppCompatActivity() {
     private fun setUpData(moviesEntity: MoviesEntity){
         binding.apply {
             tvDetailTitle.text = moviesEntity.title
-            tvReleaseDate.text = moviesEntity.releaaseDate
+            tvReleaseDate.text = moviesEntity.releaseDate
             tvVoteAverage.text = moviesEntity.voteAverage
-            tvOverview.text = moviesEntity.overview
-            Glide.with(this@DetailActivity).load(moviesEntity.posterPath).into(ivPosterDetail)
+            overviewTv.text = moviesEntity.overview
+            Glide.with(this@DetailActivity)
+                .load(IMG_URL+ moviesEntity.posterPath)
+                .apply(RequestOptions.placeholderOf(R.drawable.ic_loading).error(R.drawable.ic_broken_img))
+                .into(ivPosterDetail)
         }
     }
 

@@ -6,9 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gdscug.mooflix.R
-import com.gdscug.mooflix.data.MoviesEntity
+import com.gdscug.mooflix.data.local.MoviesEntity
 import com.gdscug.mooflix.databinding.ActivityHomeBinding
 import com.gdscug.mooflix.ui.detail.DetailActivity
+import com.gdscug.mooflix.utils.ViewModelFactory
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -29,17 +30,20 @@ class HomeActivity : AppCompatActivity() {
 
     // inisialisasi iew Model
     private fun setupViewModel() {
+        val factory = ViewModelFactory.getInstace()
         viewModel = ViewModelProvider(
             this@HomeActivity,
-            ViewModelProvider.NewInstanceFactory()
+            factory
         )[HomeViewModel::class.java]
     }
 
 
     private fun setUpData() {
         val movieAdapter = MovieAdapter()
-        val movies = viewModel.getMovies()
-        movieAdapter.submitList(movies)
+        viewModel.getMovies().observe(this){
+            val movies = it.results
+            movieAdapter.submitList(movies)
+        }
 
         binding.apply {
             rvMovies.layoutManager = GridLayoutManager(this@HomeActivity, 2)

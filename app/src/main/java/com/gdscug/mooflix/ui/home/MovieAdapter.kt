@@ -7,8 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.gdscug.mooflix.data.MoviesEntity
+import com.bumptech.glide.request.RequestOptions
+import com.gdscug.mooflix.R
+import com.gdscug.mooflix.data.local.MoviesEntity
 import com.gdscug.mooflix.databinding.ItemMovieBinding
+import com.gdscug.mooflix.utils.ShareObject.IMG_URL
 
 class MovieAdapter : ListAdapter<MoviesEntity, MovieAdapter.MovieViewHolder>(DIFFUTILS) {
     private object DIFFUTILS : DiffUtil.ItemCallback<MoviesEntity>() {
@@ -30,7 +33,10 @@ class MovieAdapter : ListAdapter<MoviesEntity, MovieAdapter.MovieViewHolder>(DIF
         fun bind(movie: MoviesEntity, itemClicked: () -> Unit) {
             with(binding) {
                 tvTitle.text = movie.title
-                Glide.with(itemView.context).load(movie.posterPath).into(ivPoster)
+                Glide.with(itemView.context)
+                    .load(IMG_URL+ movie.posterPath)
+                    .apply(RequestOptions.placeholderOf(R.drawable.ic_loading).error(R.drawable.ic_broken_img))
+                    .into(ivPoster)
             }
             itemView.setOnClickListener { itemClicked.invoke() }
         }

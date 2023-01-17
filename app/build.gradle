@@ -16,6 +16,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "apiKey",'"d9a122f6f8a9995b9bd2d4631dfc5fe9"')
     }
 
     buildTypes {
@@ -49,4 +50,11 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // okhttp3
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
 }
