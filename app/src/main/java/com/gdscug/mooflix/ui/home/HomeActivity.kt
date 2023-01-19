@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -93,7 +94,18 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun logout(){
-        viewModel.logout()
+        val builder = AlertDialog.Builder(this)
+        val dialogLogOut = builder.setTitle(getString(R.string.confirm_logout))
+            .setMessage(getString(R.string.logout_message))
+            .setPositiveButton(getString(R.string.yes)){ dialog,_ ->
+                viewModel.logout()
+                finish()
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.no)){dialog,_ ->
+                dialog.dismiss()
+            }
+        dialogLogOut.show()
     }
 
     private fun moveToLogin(){
