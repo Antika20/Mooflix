@@ -2,6 +2,8 @@ package com.gdscug.mooflix.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,6 +11,7 @@ import com.gdscug.mooflix.R
 import com.gdscug.mooflix.data.local.MoviesEntity
 import com.gdscug.mooflix.databinding.ActivityHomeBinding
 import com.gdscug.mooflix.ui.detail.DetailActivity
+import com.gdscug.mooflix.ui.login.LoginActivity
 import com.gdscug.mooflix.utils.ViewModelFactory
 
 class HomeActivity : AppCompatActivity() {
@@ -20,7 +23,7 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpAppBar()
         setupViewModel()
-        setUpData()
+        setUpAction()
     }
 
     // Mengubah judul Appbar
@@ -30,15 +33,27 @@ class HomeActivity : AppCompatActivity() {
 
     // inisialisasi iew Model
     private fun setupViewModel() {
-        val factory = ViewModelFactory.getInstace()
+        val factory = ViewModelFactory.getInstace(this)
         viewModel = ViewModelProvider(
             this@HomeActivity,
             factory
         )[HomeViewModel::class.java]
     }
 
+    //  menampung kondisi jika user udah login atau belum
+    private fun setUpAction(){
+        viewModel.getUser().observe(this) { user ->
+            if(user.isLogin){
+                setUpAdapter()
+            } else{
+                moveToLogin()
+            }
+        }
+    }
 
-    private fun setUpData() {
+
+
+    private fun setUpAdapter() {
         val movieAdapter = MovieAdapter()
         viewModel.getMovies().observe(this){
             val movies = it.results
@@ -60,5 +75,29 @@ class HomeActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.home_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.logout -> {
+                logout()
+                true
+            }
+            else ->super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun logout(){
+        viewModel.logout()
+    }
+
+    private fun moveToLogin(){
+        startActivity(Intent(this,LoginActivity::class.java))
+        finish()
     }
 }
